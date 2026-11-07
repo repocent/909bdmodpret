@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#101112" />
-  <meta name="description" content="TR-909-inspired kick drum project archive and selector page." />
+  <meta name="description" content="TR-909-geïnspireerde kick-drumprojecten en diepgaande artikelen over de bassdrum-synthese." />
   <title>909 / Kick-drum lab</title>
   <style>
     :root {
@@ -17,407 +17,225 @@
       --muted: #a1a4a7;
       --silver: #d2d4d7;
       --red: #e83d35;
-      --red-soft: rgba(232, 61, 53, 0.16);
       --max-width: 1160px;
     }
-
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 78% 10%, rgba(232,61,53,.12), transparent 32rem),
-        linear-gradient(180deg, #121314 0%, #0d0e10 100%);
+      background: radial-gradient(circle at 78% 10%, rgba(232,61,53,.12), transparent 32rem), linear-gradient(180deg, #121314 0%, #0d0e10 100%);
       font: 15px/1.6 Inter, "Segoe UI", sans-serif;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
-
     a { color: inherit; }
     .shell { width: min(var(--max-width), calc(100% - 36px)); margin-inline: auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; min-height:86px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .brand { display:inline-flex; align-items:center; gap:12px; text-decoration:none; font-weight:700; letter-spacing:.18em; text-transform:uppercase; font-size:11px; }
+    .brand-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(232,61,53,.8); background:linear-gradient(180deg,rgba(232,61,53,.2),rgba(232,61,53,.04)); color:#ff7d77; font:700 10px/1 ui-monospace,monospace; letter-spacing:-.08em; }
+    .top-note,.eyebrow,.stats,.section-kicker,.count,.badge,.index,.card-type,.article-label,.footer,.toc { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; }
+    .top-note { color:var(--muted); font-size:10px; letter-spacing:.14em; }
+    .hero { position:relative; overflow:hidden; padding:64px 0 44px; }
+    .hero::after { content:"909"; position:absolute; right:-42px; top:0; font:900 clamp(180px,32vw,360px)/.9 "Segoe UI",sans-serif; letter-spacing:-.1em; color:rgba(255,255,255,.035); pointer-events:none; user-select:none; }
+    .hero-inner { position:relative; z-index:1; max-width:760px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:12px; margin:0 0 22px; color:#ff7d77; font-size:10px; font-weight:700; letter-spacing:.18em; }
+    .eyebrow::before { content:""; width:28px; height:1px; background:rgba(232,61,53,.8); }
+    h1 { margin:0; font-size:clamp(3rem,7vw,6rem); line-height:.94; letter-spacing:-.07em; font-weight:800; }
+    h1 .soft { color:var(--silver); font-weight:300; }
+    .intro { max-width:660px; margin:22px 0 0; color:var(--muted); font-size:17px; line-height:1.75; }
+    .stats { display:flex; flex-wrap:wrap; gap:14px 24px; margin-top:28px; color:#7d8085; font-size:10px; letter-spacing:.14em; }
+    .stats span::before { content:"●"; color:var(--red); margin-right:7px; font-size:8px; vertical-align:1px; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:16px; margin:14px 0 20px; }
+    .section-kicker { margin:0; color:var(--muted); font-size:10px; letter-spacing:.16em; }
+    .section-head h2 { margin:8px 0 0; font-size:clamp(1.7rem,3vw,2.5rem); line-height:1.1; letter-spacing:-.05em; font-weight:700; }
+    .count { color:var(--muted); font-size:10px; letter-spacing:.12em; }
+    .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding-bottom:26px; }
+    .card { position:relative; display:flex; flex-direction:column; min-height:310px; padding:22px 20px 18px; border:1px solid var(--line); background:linear-gradient(180deg,rgba(255,255,255,.01),transparent),var(--surface); transition:transform .18s ease,border-color .18s ease,background .18s ease; }
+    .card:hover { transform:translateY(-4px); border-color:rgba(255,255,255,.18); background:linear-gradient(180deg,rgba(232,61,53,.04),transparent 32%),var(--surface-soft); }
+    .card.primary { border-color:rgba(232,61,53,.75); background:linear-gradient(180deg,rgba(232,61,53,.1),transparent 34%),var(--surface); }
+    .card-top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    .badge { color:#ff9a92; border:1px solid rgba(232,61,53,.5); background:rgba(232,61,53,.08); padding:5px 7px; font-size:9px; letter-spacing:.12em; }
+    .index { color:var(--muted); font-size:9px; letter-spacing:.12em; }
+    .card h3 { margin:0 0 12px; font-size:clamp(1.7rem,2.4vw,2.2rem); line-height:1.08; letter-spacing:-.04em; font-weight:700; }
+    .card p { margin:0 0 22px; color:var(--muted); font-size:13px; line-height:1.7; }
+    .card-bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,.08); }
+    .card-type { color:#7d8085; font-size:9px; letter-spacing:.12em; }
+    .arrow-link { display:inline-grid; place-items:center; width:34px; height:34px; border:1px solid rgba(255,255,255,.14); border-radius:50%; color:var(--silver); text-decoration:none; transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease; }
+    .card:hover .arrow-link,.primary .arrow-link { background:var(--red); border-color:var(--red); color:white; transform:translateX(2px); }
+    .card-link-overlay { position:absolute; inset:0; z-index:1; text-indent:-9999px; overflow:hidden; }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 86px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+    .reading { margin-top:32px; padding-top:34px; border-top:1px solid rgba(255,255,255,.1); }
+    .reading-lede { max-width:790px; margin:0 0 20px; color:var(--muted); font-size:14px; line-height:1.85; }
+    .toc { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 28px; font-size:9px; letter-spacing:.08em; }
+    .toc a { padding:8px 10px; border:1px solid var(--line); background:rgba(255,255,255,.025); color:var(--silver); text-decoration:none; }
+    .toc a:hover { border-color:var(--red); color:#ff9a92; }
+    .article { display:grid; grid-template-columns:150px minmax(0,1fr); gap:28px; padding:28px 0; border-top:1px solid rgba(255,255,255,.09); scroll-margin-top:24px; }
+    .article-index { color:#ff8983; font:10px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.14em; text-transform:uppercase; }
+    .article-index span { display:block; margin-top:7px; color:#777a7d; font-size:9px; }
+    .article-body { max-width:790px; }
+    .article h3 { margin:0 0 14px; font-size:clamp(1.4rem,2.4vw,2rem); line-height:1.2; letter-spacing:-.035em; }
+    .article h4 { margin:25px 0 8px; color:var(--silver); font-size:14px; line-height:1.4; }
+    .article p,.article li { color:#b0b2b4; font-size:13px; line-height:1.9; }
+    .article p { margin:0 0 12px; }
+    .article strong { color:var(--text); font-weight:650; }
+    .article ul { margin:8px 0 14px; padding-left:20px; }
+    .article li { padding-left:3px; margin:4px 0; }
+    .equation { overflow-x:auto; margin:16px 0; padding:14px 16px; border:1px solid var(--line); border-left:2px solid var(--red); background:#141618; color:#f0d7d4; font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:nowrap; }
+    .callout { margin:16px 0; padding:13px 15px; border:1px solid rgba(232,61,53,.28); background:rgba(232,61,53,.055); color:#c0c1c2; font-size:12px; line-height:1.8; }
+    .callout strong { color:#ffaaa5; }
+    .footer { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:18px 0 32px; border-top:1px solid rgba(255,255,255,.08); color:var(--muted); font-size:10px; letter-spacing:.14em; margin-top:36px; }
+    .footer strong { color:var(--silver); font-weight:700; }
+    a:focus-visible { outline:2px solid #ff7d77; outline-offset:4px; }
+    @media (max-width:860px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .hero { padding-top:52px; } .article { grid-template-columns:110px minmax(0,1fr); gap:20px; } }
+    @media (max-width:560px) {
+      .shell { width:min(var(--max-width),calc(100% - 24px)); }
+      .topbar { min-height:72px; }
+      .top-note { letter-spacing:.08em; font-size:9px; }
+      .cards { grid-template-columns:1fr; }
+      .hero { padding-bottom:24px; }
+      .intro { font-size:15px; }
+      .article { grid-template-columns:1fr; gap:8px; padding:22px 0; }
+      .article-index span { display:inline; margin-left:8px; }
+      .footer { flex-direction:column; align-items:flex-start; }
     }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      font-weight: 700;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-
-    .brand-mark {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 1px solid rgba(232,61,53,.8);
-      background: linear-gradient(180deg, rgba(232,61,53,.2), rgba(232,61,53,.04));
-      color: #ff7d77;
-      font: 700 10px/1 ui-monospace, monospace;
-      letter-spacing: -.08em;
-    }
-
-    .top-note {
-      color: var(--muted);
-      font: 10px/1.2 ui-monospace, monospace;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 64px 0 44px;
-    }
-
-    .hero::after {
-      content: "909";
-      position: absolute;
-      right: -42px;
-      top: 0;
-      font: 900 clamp(180px, 32vw, 360px)/0.9 "Segoe UI", sans-serif;
-      letter-spacing: -.1em;
-      color: rgba(255,255,255,.035);
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 760px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      margin: 0 0 22px;
-      color: #ff7d77;
-      font: 700 10px/1.4 ui-monospace, monospace;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 28px;
-      height: 1px;
-      background: rgba(232,61,53,.8);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(3rem, 7vw, 6rem);
-      line-height: .94;
-      letter-spacing: -.07em;
-      font-weight: 800;
-    }
-
-    h1 .soft {
-      color: var(--silver);
-      font-weight: 300;
-    }
-
-    .intro {
-      max-width: 620px;
-      margin: 22px 0 0;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.75;
-    }
-
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px 24px;
-      margin-top: 28px;
-      color: #7d8085;
-      font: 10px/1.4 ui-monospace, monospace;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-
-    .stats span::before {
-      content: "●";
-      color: var(--red);
-      margin-right: 7px;
-      font-size: 8px;
-      vertical-align: 1px;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 16px;
-      margin: 14px 0 20px;
-    }
-
-    .section-kicker {
-      margin: 0;
-      color: var(--muted);
-      font: 10px/1.2 ui-monospace, monospace;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-    .section-head h2 {
-      margin: 8px 0 0;
-      font-size: clamp(1.7rem, 3vw, 2.5rem);
-      line-height: 1.1;
-      letter-spacing: -.05em;
-      font-weight: 700;
-    }
-
-    .count {
-      color: var(--muted);
-      font: 10px/1.2 ui-monospace, monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      padding-bottom: 26px;
-    }
-
-    .card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: 310px;
-      padding: 22px 20px 18px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.01), transparent), var(--surface);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,.18);
-      background: linear-gradient(180deg, rgba(232,61,53,.04), transparent 32%), var(--surface-soft);
-    }
-
-    .card.primary {
-      border-color: rgba(232,61,53,.75);
-      background: linear-gradient(180deg, rgba(232,61,53,.1), transparent 34%), var(--surface);
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .badge {
-      color: #ff9a92;
-      border: 1px solid rgba(232,61,53,.5);
-      background: rgba(232,61,53,.08);
-      padding: 5px 7px;
-      font: 9px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .index {
-      color: var(--muted);
-      font: 9px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .card h3 {
-      margin: 0 0 12px;
-      font-size: clamp(1.7rem, 2.4vw, 2.2rem);
-      line-height: 1.08;
-      letter-spacing: -.04em;
-      font-weight: 700;
-    }
-
-    .card p {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .card-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,.08);
-    }
-
-    .card-type {
-      color: #7d8085;
-      font: 9px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .arrow-link {
-      display: inline-grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 50%;
-      color: var(--silver);
-      text-decoration: none;
-      transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
-    }
-
-    .card:hover .arrow-link,
-    .primary .arrow-link {
-      background: var(--red);
-      border-color: var(--red);
-      color: white;
-      transform: translateX(2px);
-    }
-
-    .card-link-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      text-indent: -9999px;
-      overflow: hidden;
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      padding: 18px 0 32px;
-      border-top: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font: 10px/1.4 ui-monospace, monospace;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-
-    .footer strong {
-      color: var(--silver);
-      font-weight: 700;
-    }
-
-    @media (max-width: 860px) {
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero { padding-top: 52px; }
-    }
-
-    @media (max-width: 560px) {
-      .shell { width: min(var(--max-width), calc(100% - 24px)); }
-      .topbar { min-height: 72px; }
-      .top-note { letter-spacing: .08em; }
-      .cards { grid-template-columns: 1fr; }
-      .hero { padding-bottom: 24px; }
-      .intro { font-size: 15px; }
-      .footer { flex-direction: column; align-items: flex-start; }
-    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; } }
   </style>
 </head>
 <body>
   <header class="topbar shell">
-    <a class="brand" href="./" aria-label="Kick-drum lab home">
-      <span class="brand-mark" aria-hidden="true">909</span>
-      <span>Kick-drum lab</span>
-    </a>
+    <a class="brand" href="./" aria-label="Kick-drum lab home"><span class="brand-mark" aria-hidden="true">909</span><span>Kick-drum lab</span></a>
     <span class="top-note">Analog rhythm systems</span>
   </header>
 
   <main class="shell">
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-inner">
-        <p class="eyebrow">TR-909 inspired studies</p>
+        <p class="eyebrow">TR-909 bass drum / circuit notes</p>
         <h1 id="page-title">Kick drum <span class="soft">laboratory.</span></h1>
-        <p class="intro">Een premium selectie van kick-drum circuitstudies, stripboard-layouts en interactieve sound experiments. Kies een project om direct in de werking te duiken.</p>
-        <div class="stats" aria-label="Project summary">
-          <span>3 builds</span>
-          <span>Interactive layouts</span>
-          <span>Sound exploration</span>
-        </div>
+        <p class="intro">Een technische verdieping in de bassdrum van de TR-909: van trigger en spanningsgestuurde toonhoogte tot amplitude-envelop, accent, transiënt en de grenzen van een digitale reconstructie.</p>
+        <div class="stats" aria-label="Project summary"><span>Analog voice</span><span>5 technical essays</span><span>Measured-model notes</span></div>
       </div>
     </section>
 
     <section aria-labelledby="projects-title">
       <div class="section-head">
-        <div>
-          <p class="section-kicker">Selected projects</p>
-          <h2 id="projects-title">Choose your build.</h2>
-        </div>
+        <div><p class="section-kicker">Interactive project files</p><h2 id="projects-title">Kies je build.</h2></div>
         <span class="count">01 — 03</span>
       </div>
-
       <div class="cards">
         <article class="card primary">
-          <div class="card-top">
-            <span class="badge">Featured</span>
-            <span class="index">01 / main</span>
-          </div>
+          <div class="card-top"><span class="badge">Featured</span><span class="index">01 / main</span></div>
           <h3>Kick-drum stripboards</h3>
-          <p>De belangrijkste collectie met vier kick-ontwerpen, stripboard-visualisatie, componentenlijst en interactieve geluidspagina.</p>
-          <div class="card-bottom">
-            <span class="card-type">Main build</span>
-            <a class="arrow-link" href="kick-stripboards.html" aria-label="Open Kick-drum stripboards">↗</a>
-          </div>
+          <p>Vier kick-ontwerpen met interactieve stripboard-layouts, onderdelenlijsten en een browsergebaseerd geluidsmodel.</p>
+          <div class="card-bottom"><span class="card-type">Main build</span><a class="arrow-link" href="kick-stripboards.html" aria-label="Open Kick-drum stripboards">↗</a></div>
           <a class="card-link-overlay" href="kick-stripboards.html">Open Kick-drum stripboards</a>
         </article>
-
         <article class="card">
-          <div class="card-top">
-            <span class="badge">Original</span>
-            <span class="index">02 / archive</span>
-          </div>
+          <div class="card-top"><span class="badge">Original</span><span class="index">02 / archive</span></div>
           <h3>Nein Oh Nein V1.0</h3>
           <p>De originele handgetekende kick-studie met schema, scan-overlay, klikbare onderdelen en geluidscontrole.</p>
-          <div class="card-bottom">
-            <span class="card-type">Circuit study</span>
-            <a class="arrow-link" href="Nein%20Oh%20Nein%20Kick%20V1.0%20(3).html" aria-label="Open Nein Oh Nein Kick V1.0">↗</a>
-          </div>
+          <div class="card-bottom"><span class="card-type">Circuit study</span><a class="arrow-link" href="Nein%20Oh%20Nein%20Kick%20V1.0%20(3).html" aria-label="Open Nein Oh Nein Kick V1.0">↗</a></div>
           <a class="card-link-overlay" href="Nein%20Oh%20Nein%20Kick%20V1.0%20(3).html">Open Nein Oh Nein Kick V1.0</a>
         </article>
-
         <article class="card">
-          <div class="card-top">
-            <span class="badge">Sequencer</span>
-            <span class="index">03 / rhythm</span>
-          </div>
+          <div class="card-top"><span class="badge">Sequencer</span><span class="index">03 / rhythm</span></div>
           <h3>16-step sequencer</h3>
-          <p>Stel het tempo in en laat de gekozen kick-build in een patroon afspelen via een compacte step sequencer.</p>
-          <div class="card-bottom">
-            <span class="card-type">Pattern mode</span>
-            <a class="arrow-link" href="https://github.com/repocent/909bdmodpret/blob/Stepseq/Kick-drum_stripboards_stepsequencer.html" target="_blank" rel="noreferrer noopener" aria-label="Open step sequencer project">↗</a>
-          </div>
+          <p>Stel het tempo in en laat de geselecteerde kick-build in een patroon afspelen.</p>
+          <div class="card-bottom"><span class="card-type">Stepseq branch</span><a class="arrow-link" href="https://github.com/repocent/909bdmodpret/blob/Stepseq/Kick-drum_stripboards_stepsequencer.html" target="_blank" rel="noreferrer noopener" aria-label="Open step sequencer">↗</a></div>
           <a class="card-link-overlay" href="https://github.com/repocent/909bdmodpret/blob/Stepseq/Kick-drum_stripboards_stepsequencer.html" target="_blank" rel="noreferrer noopener">Open step sequencer</a>
         </article>
       </div>
     </section>
 
-    <footer class="footer">
-      <span><strong>Kick-drum lab</strong> · GitHub Pages</span>
-      <span>analog spirit / digital tools</span>
-    </footer>
+    <section class="reading" aria-labelledby="articles-title">
+      <div class="section-head">
+        <div><p class="section-kicker">Deep dive / analog bass drum</p><h2 id="articles-title">De TR-909-kick van binnenuit.</h2></div>
+        <span class="count">05 essays</span>
+      </div>
+      <p class="reading-lede">Deze stukken behandelen de TR-909 bass drum als een samenhangende analoge stem, niet als een algemene kick-synth. De exacte componentwaarden en interne knooppunten moeten aan een originele servicehandleiding worden getoetst; waar de projectcode een vereenvoudigd model gebruikt, wordt dat expliciet onderscheiden van het fysieke Roland-circuit.</p>
+      <nav class="toc" aria-label="Inhoudsopgave">
+        <a href="#voice">01 · Voice architecture</a><a href="#pitch">02 · Pitch transient</a><a href="#amp">03 · Amplitude &amp; decay</a><a href="#accent">04 · Trigger &amp; accent</a><a href="#model">05 · Meten &amp; modelleren</a>
+      </nav>
+
+      <article class="article" id="voice">
+        <div class="article-index">Essay 01<span>Architectuur</span></div>
+        <div class="article-body">
+          <h3>Een analoge stem, geen sample-player</h3>
+          <p>De TR-909 is een hybride drumcomputer: veel instrumenten zijn sample-gebaseerd, maar de bass drum wordt door een analoge klankbron gevormd. Dat onderscheid is hoorbaar én praktisch belangrijk. Een sample is een vast opgenomen golfvorm; een analoge voice bouwt elke slag opnieuw op uit een oscillator, tijdvariërende spanningen en analoge signaalverwerking. Dezelfde instellingen produceren dus een herhaalbare klank, maar geen noodzakelijk bit-voor-bit identieke opname.</p>
+          <p>Een bruikbaar functioneel beeld van de kick bestaat uit vier gekoppelde processen: <strong>een trigger start de gebeurtenis</strong>; een toonbron levert de lage body; een snelle spanningsverandering geeft de toon in het begin een hoge frequentie; en een amplitudevorm bepaalt hoe de energie uitsterft. Aanslag- en accentpaden beïnvloeden de waargenomen punch en het niveau. Het is dus niet één oscillator met een volume-knop: meerdere tijdcurves lopen tegelijk, en hun onderlinge timing bepaalt de herkenbare envelope.</p>
+          <h4>Waarom timing belangrijker is dan één “magische” frequentie</h4>
+          <p>De kick heeft een breed spectrum direct na de trigger, maar wordt al snel een veel smallere, lage toon. Ons gehoor integreert die eerste, korte transiënt als attack en de daaropvolgende laagfrequente energie als body. Verander je de pitch-sweep zonder de amplitude-envelop aan te passen, dan verandert de indruk van de aanslag. Verleng je alleen de amplitude-decay, dan blijft de lage body langer hoorbaar terwijl de toonhoogte vrijwel hetzelfde traject kan houden.</p>
+          <p>Daarom moeten TUNE, DECAY, ATTACK en ACCENT analytisch uit elkaar worden gehouden. Sommige bedieningselementen beïnvloeden in de hardware meer dan één deel van de stem, maar hun hoorbare functies zijn niet onderling uitwisselbaar. De controls in deze site zijn een luistermodel, niet een garantie dat een virtuele regelaar één-op-één overeenkomt met de elektrische functie van een originele potmeter.</p>
+          <div class="callout"><strong>Schema versus uitleg:</strong> de referentie op de projectpagina bevat zowel het originele bass-drum schema als een vereenvoudigd blokschema. Een blokschema legt functies uit; het vervangt geen schema-analyse van transistoren, condensatoren, biaspunten en voedingsrails.</div>
+        </div>
+      </article>
+
+      <article class="article" id="pitch">
+        <div class="article-index">Essay 02<span>Pitch transient</span></div>
+        <div class="article-body">
+          <h3>De pitch-envelope: de klap vóór de lage toon</h3>
+          <p>De typische 909-kick begint met een veel hogere oscillatorfrequentie dan de toon die je in de staart hoort. De pitch-envelope trekt de frequentie kort na de trigger omlaag. Die snelle daling is de bron van de initiële “klap”: de eerste cycli liggen hoger en leveren meer boventooninformatie; de toon landt vervolgens in het lage gebied dat de body draagt.</p>
+          <p>Een handig eerste-orde model voor zo’n daling is een exponentiële overgang:</p>
+          <div class="equation">f(t) = f<sub>eind</sub> + (f<sub>start</sub> − f<sub>eind</sub>) · e<sup>−t/τ<sub>pitch</sub></sup></div>
+          <p><strong>f<sub>start</sub></strong> is de beginfrequentie, <strong>f<sub>eind</sub></strong> de asymptotische eindtoon en <strong>τ<sub>pitch</sub></strong> de tijdconstante. Na één tijdconstante is ongeveer 63% van het verschil tussen start en eind afgelegd; na circa vijf tijdconstanten is het verschil voor praktische doeleinden bijna verdwenen. Dat verklaart waarom een pitch-sweep van enkele tientallen milliseconden toch als een scherpe transient wordt ervaren.</p>
+          <p>In de bestaande browserweergave wordt de eindtoon in het 909-model op 50 Hz gezet. De startfrequentie wordt uit de PITCH-regelaar afgeleid: het model interpoleert waarden rond 262–290 Hz. Ook de pitch-tijdconstante wordt in het model van ongeveer 8 tot 29 ms gemapt. Dit zijn <strong>modelparameters uit de projectcode</strong> die zijn gekozen om gemeten kickgedrag te benaderen; ze moeten niet worden gelezen als gegarandeerde fabriekswaarden of als een volledige reconstructie van de pitch-envelope-spanning in het originele circuit.</p>
+          <h4>Wat TUNE verandert — en wat het niet alleen verandert</h4>
+          <p>Een tune-regelaar kan de starttoon, de eindtoon, de hoeveelheid sweep of de tijdconstante beïnvloeden, afhankelijk van hoe de oscillator en envelope in het echte schema zijn opgebouwd. Luistertests moeten daarom per versie van het schema worden gedaan. Vergelijk bij voorkeur eerst twee slagen met dezelfde amplitude-decay en accent, en verander dan één pitch-parameter. Anders kan een verschil in luidheid of staartlengte ten onrechte als een pitch-effect worden geïnterpreteerd.</p>
+          <p>Bij zeer lage frequenties is “toonhoogte” bovendien niet het hele verhaal: de periode duurt lang. Rond 50 Hz duurt één cyclus 20 ms. Een sweep van 10–20 ms valt dus samen met slechts een deel van een uiteindelijke lage cyclus. Dat maakt de exacte beginfase, oscillatorstart en eerste golfvormcycli belangrijk voor de attack-klank en voor hoe hard de kick op een meter of in een mix lijkt.</p>
+        </div>
+      </article>
+
+      <article class="article" id="amp">
+        <div class="article-index">Essay 03<span>Amplitude</span></div>
+        <div class="article-body">
+          <h3>Decay is een envelope, geen vaste nootduur</h3>
+          <p>De amplitude-envelop bepaalt hoe de energie van de bass drum in de tijd afneemt. Een eenvoudige exponentiële amplitude is:</p>
+          <div class="equation">A(t) = A<sub>0</sub> · e<sup>−t/τ<sub>amp</sub></sup></div>
+          <p>Na één τ resteert ongeveer 37% van de oorspronkelijke amplitude; na vijf τ ongeveer 0,7%. Een hoorbare “duur” is daarom niet hetzelfde als de ingestelde tijdconstante. Het hangt ook af van afspeelniveau, frequentie, monitor, maskerwerking van andere instrumenten en de drempel waarop de staart niet meer hoorbaar is.</p>
+          <p>De TR-909-kick wordt vaak beschreven via DECAY, maar in een echte schakeling hoeft die knop geen lineaire volumeschuif te zijn. Een potmeter kan een weerstand in een RC-netwerk veranderen. Dan geldt in eerste benadering τ = R·C: een lineaire weerstandsslag levert een tijdconstante op die elektrisch lineair kan zijn, terwijl de gehoorde verandering niet lineair aanvoelt. Componenttoleranties, condensatorlek en de belasting van het volgende circuit kunnen de werkelijke curve verder beïnvloeden.</p>
+          <h4>Waarom staartlengte en pitch-sweep elkaar beïnvloeden in de waarneming</h4>
+          <p>Hoewel pitch-envelope en amplitude-envelope fysiek twee verschillende functies zijn, neemt hun waargenomen karakter samen toe. Een langere lage staart klinkt vaak “groter”, zelfs als de begintransiënt gelijk blijft. Een hogere startfrequentie kan een slag harder doen lijken zonder dat de piekamplitude toeneemt, omdat de attack meer energie in een gebied plaatst waar kleine luidsprekers en het gehoor gevoeliger zijn.</p>
+          <p>Het 909-model op de site gebruikt daarom een gefaseerde amplitudevorm: een eerste afname met een tijdconstante van circa 46 ms, gevolgd door een tweede decay die wordt gestuurd door DECAY. In diezelfde code correspondeert de DECAY-schuif met gemodelleerde waarden van ongeveer 13–97 ms. Ook dit is de implementatie van de webaudio-benadering, niet een formele meting van de interne RC-tijdconstanten van elke TR-909.</p>
+          <div class="callout"><strong>Luistertest:</strong> zet accent en attack vast, maak twee opnames met alleen andere DECAY-standen en normaliseer ze niet afzonderlijk op piekniveau. Vergelijk zowel de eerste 50 ms als de staart; normaliseren kan juist het niveauverschil verbergen dat je probeert te beoordelen.</div>
+        </div>
+      </article>
+
+      <article class="article" id="accent">
+        <div class="article-index">Essay 04<span>Trigger &amp; accent</span></div>
+        <div class="article-body">
+          <h3>Trigger, aanslag en accent zijn verschillende signalen</h3>
+          <p>Een trigger is in de eerste plaats een tijdreferentie: hij vertelt de voice wanneer een nieuwe slag moet beginnen. De trigger zelf is niet automatisch de hoorbare klik. In analoge drumcircuits wordt een korte puls vaak gebruikt om een envelope of schakeltrap te starten; een apart kortdurend signaal kan daarnaast een aanslagcomponent leveren. Die functies zijn conceptueel verschillend, ook wanneer ze op hetzelfde moment worden geactiveerd.</p>
+          <p>Accent is weer een ander idee: het geeft een stap extra nadruk. In een drumcomputer kan accent via een accentbus of stuurspanning de respons van de geselecteerde stem veranderen. De precieze bestemmingen en schaal van die spanning moeten uit het relevante TR-909-schema worden vastgesteld; veronderstel niet dat accent uitsluitend een eenvoudige volumevermenigvuldiger is.</p>
+          <p>De browser-synth op deze site gebruikt een bewust eenvoudig accentmodel: een factor <strong>1 + 0,6 × ACC</strong> schaalt de kick-body en een deel van de transiënt. Dat is handig om het hoorbare idee te demonstreren, maar het reproduceert niet automatisch de volledige accentverdeling, headroom of analoge interactie van de originele machine.</p>
+          <h4>De aanslag in het projectmodel</h4>
+          <p>Voor de webaudio-versie wordt een zeer korte puls gebruikt, gevolgd door een low-passfilter rond 900 Hz; daarnaast wordt kort gefilterde ruis toegevoegd. De code stopt de puls na ongeveer 2 ms en de ruis na circa 50 ms. Deze onderdelen maken het digitale model beter instelbaar en geven het een herkenbare attack, maar mogen niet zonder verificatie worden gelijkgesteld aan afzonderlijke onderdelen of exact dezelfde signaalpaden in de originele TR-909.</p>
+          <p>Bij metingen is het nuttig drie traces apart te bekijken: trigger/control, oscillatoruitgang en uiteindelijke audio-uitgang. Meet met een hoogohmige probe en voorkom dat een scoopprobe een hoogimpedant knooppunt belast. Gebruik een vaste triggerbron en registreer meerdere slagen; variatie in meetopstelling kan anders worden aangezien voor analoge variatie in de voice.</p>
+        </div>
+      </article>
+
+      <article class="article" id="model">
+        <div class="article-index">Essay 05<span>Modelleren</span></div>
+        <div class="article-body">
+          <h3>Van service-schema naar bruikbaar luistermodel</h3>
+          <p>Een getrouwe reconstructie van de TR-909-kick vraagt meer dan het kiezen van een oscillator en een pitch-sweep. Het volledige schema kan onder meer oscillatorvorm, envelope-generatie, transistor- of opamptrappen, filters, gainstructuur, clipping en interactie met voedingsrails bevatten. Een browsermodel reduceert die schakeling tot een paar hoorbare parameters; dat maakt het geschikt voor experiment, maar betekent dat elektrische details ontbreken.</p>
+          <p>De huidige webaudio-implementatie gebruikt een periodieke golf die met een eindige reeks harmonischen wordt opgebouwd, een pitch-sweep naar 50 Hz, een gefaseerde gain-envelope, een korte aanslag en een waveshaper. De 909-variant gebruikt in code een zachte tanh-achtige curve. Het model heeft dus een expliciete, instelbare niet-lineariteit en kan eigenschappen benaderen die als saturatie of clipping worden ervaren. Het is geen transistor-level SPICE-model en ook geen opname van een originele TR-909.</p>
+          <h4>Een reproduceerbare meet- en vergelijkmethode</h4>
+          <ul>
+            <li>Leg eerst de exacte machine, revisie, instellingen, uitgang en meetketen vast. Een uitgangstransformator, mixer of interface kan de lage frequenties en verzadiging veranderen.</li>
+            <li>Neem meerdere slagen op met dezelfde trigger en voldoende headroom. Vermijd automatische gain, limitering en niet-gedocumenteerde normalisatie.</li>
+            <li>Meet pitch uit de oscillator-/audio-opname met korte tijdvensters. Een lange FFT geeft een nauwkeurige frequentie maar smeert de snelle sweep uit; een korte analyse toont timing beter maar heeft grovere frequentieresolutie.</li>
+            <li>Vergelijk de envelope zowel op lineaire amplitude als op dB-schaal. Een exponentiële afname verschijnt anders in beide grafieken.</li>
+            <li>Pas eerst starttoon, eindtoon en pitch-tijd aan; stem daarna amplitude-decay en transiënt af. Als alle parameters tegelijk bewegen, is niet meer duidelijk welke wijziging het verschil veroorzaakte.</li>
+            <li>Vergelijk op gelijk waargenomen niveau én bewaar de niet-genormaliseerde opname. Niveau-matchen is nuttig voor timbre; ruwe niveaus zijn nodig om accent en dynamiek te beoordelen.</li>
+          </ul>
+          <p>De illustratieve schema- en stripboard-layouts in dit project hebben verschillende status: een scan kan een bron tonen, een blokschema is functioneel samengevat en een nagetekende stripboard kan een interpretatie zijn. Controleer bij nabouwen iedere verbinding, componentwaarde, polariteit, pinout en voedingsaansluiting aan de hand van de originele service-documentatie. De toelichting hier is bedoeld om de synthese te begrijpen, niet om vervangende reparatie-instructies te zijn.</p>
+          <div class="callout"><strong>Samengevat:</strong> de 909-kick herken je vooral aan de gecoördineerde tijdontwikkeling van pitch, amplitude en attack. De parameters in de interactieve browser-versie zijn expliciet modelkeuzes. Gebruik ze om te leren luisteren en hypotheses te testen; gebruik het originele schema en metingen aan een machine voor uitspraken over het echte circuit.</div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer"><span><strong>Kick-drum lab</strong> · GitHub Pages</span><span>analog spirit / digital tools</span></footer>
   </main>
 </body>
 </html>
