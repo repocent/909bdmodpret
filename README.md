@@ -1,38 +1,58 @@
-# TR-909 Kick Drum and Stripboard Demos
+# 909 / Kick Lab — circuit studies
 
-A small GitHub Pages site for exploring kick-drum sounds inspired by the Roland TR-909. It brings together browser-based sound demos, interactive stripboard diagrams, and component lists.
+Een onafhankelijke verzameling DIY-kickprojecten, geïnspireerd door de Roland TR-909. Dit project brengt interactieve stripboard-layouts, componentenlijsten, een eigen netlijst en browsergebaseerde klankstudies samen.
 
-> **Please note:** The sounds are generated in the browser. They are approximations for listening and learning, not recordings of a TR-909 or simulations of real electronic circuits. The diagrams are references, not verified build instructions.
+> **Let op:** de kickgeluiden zijn Web Audio-modellen, geen simulaties van de getoonde schakelingen en geen opnames van een TR-909. De tekeningen en BOM's zijn documentatie om mee te beginnen, niet gevalideerde productiegegevens. Controleer componentwaarden, aansluitingen, polariteit en netten voordat je iets bouwt of bestelt.
 
-## Explore the pages
+## Projecten
 
-- **[`index.html`](index.html)** — Start here to choose a project page.
-- **[`kick-stripboards.html`](kick-stripboards.html)** — Explore four kick designs: the Nein Oh Nein kick, a TR-909-inspired kick, a custom dual-ring kick, and a TR-909-inspired kick with modification controls.
-- **[`Kick-drum_stripboards_stepsequencer.html`](Kick-drum_stripboards_stepsequencer.html)** — Try the same kick designs with a 16-step rhythm sequencer. Choose steps, set the tempo, and play the pattern using the selected kick.
-- **[`Nein Oh Nein Kick V1.0 (3).html`](Nein%20Oh%20Nein%20Kick%20V1.0%20(3).html)** — Compare a hand-drawn stripboard scan with an annotated component layout, and explore a TR-909 schematic and block diagram.
+- **[`index.html`](index.html)** — portfolio-achtige startpagina.
+- **[`kick-stripboards.html`](kick-stripboards.html)** — vier kickstudies met interactieve stripboard-layouts, componentenlijsten en downloadopties voor SVG en CSV. Het eigen dual-ring-ontwerp toont ook een uit de stripboard-layout afgeleide netlijst.
+- **[`Kick-drum_stripboards_stepsequencer.html`](Kick-drum_stripboards_stepsequencer.html)** — dezelfde vier studies met een 16-staps sequencer.
+- **[`Nein Oh Nein Kick V1.0 (3).html`](Nein%20Oh%20Nein%20Kick%20V1.0%20(3).html)** — het oorspronkelijke project met scans, schema/layoutreferenties en klankdemo.
 
-## What you can do
+## De pagina's gebruiken
 
-- Press **TRIG** or the space bar to hear a kick.
-- Adjust controls such as pitch, attack, decay, level, accent, noise, and drive. Available controls vary by design.
-- Click a component or use the component list to highlight parts on a board. Some pages also let you filter components or compare the drawing with a scan.
-- On the custom dual-ring design, inspect the displayed connections and netlist. This design is marked as unbuilt.
-- On the modded-kick page, try controls for pitch, tune depth, drive, longer tune or decay, and decay hold. These controls change the audio model; the board does not show added modification circuitry. Exact component values for the referenced modifications have not been verified.
+Open een HTML-pagina in een moderne browser. Klik op **TRIG** of gebruik de spatiebalk om een kick te horen; pas de beschikbare regelaars aan om de klankmodellen te verkennen. Op de stripboardpagina kun je onderdelen selecteren en de layout, BOM en aansluitinformatie bekijken. Audio start doorgaans pas na een gebruikersactie.
 
-## Run locally
-
-There is no build step or package installation. With Python 3 installed, run this from the repository directory:
+Lokaal serveren kan zonder buildstap of dependencies:
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000/> in a browser. Use a modern browser with Web Audio API support to hear the generated sounds; the browser may ask for a click before audio can start.
+Open daarna <http://localhost:8000/>.
 
-## Publish with GitHub Pages
+## SVG en BOM uit de stripboardpagina halen
 
-The repository is set up as a static site for GitHub Pages. Enable Pages in the repository settings and select the appropriate publishing source for the site. The workflow at `.github/workflows/jekyll-docker.yml` runs a Jekyll build check for pushes and pull requests to `main`.
+Gebruik [`kick-stripboards.html`](kick-stripboards.html), niet alleen de sequencerpagina:
 
-## Project status
+1. Open de pagina lokaal of via GitHub Pages.
+2. Selecteer een van de vier projecttabs.
+3. Onder de stripboard-tekening staan downloadknoppen. Kies **Stripboard (SVG)** voor de vectorweergave en **Bomlijst (CSV)** voor de onderdelenlijst. **Layout + bomlijst (HTML, printbaar)** bewaart ook een printbare referentie.
+4. De knop **Alle bomlijsten (CSV)** verzamelt de lijsten van alle vier de varianten.
+5. Open de CSV in een spreadsheet of teksteditor en controleer waarden en referenties. De CSV is een stuklijst, geen KiCad-netlist.
 
-This repository is a collection of standalone HTML pages. The standard and modified TR-909 sounds are software models, and the custom dual-ring design is a documented concept rather than a tested hardware build. Check schematics and component values independently before using them to build a circuit.
+De SVG-export is bedoeld als zelfstandige visuele referentie. Scans/achtergrondbeelden worden bij export weggelaten. De SVG beschrijft niet automatisch elektrische symbolen, footprints, pin-to-pin verbindingen of PCB-koperbanen.
+
+## Van SVG en BOM naar een KiCad-project
+
+De exports zijn startmateriaal voor handmatige reconstructie; er is geen automatische HTML-naar-KiCad-conversie en er worden geen KiCad-schema's of PCB-bestanden meegeleverd.
+
+1. **Kies één ontwerp en bewaar de bronnen.** Maak een aparte map voor de SVG, BOM-CSV, relevante scan/schema en je KiCad-project. Vermeld in je projectnotities welke HTML-tab en revisie je als bron hebt gebruikt.
+2. **Behandel de SVG als plaatsingsreferentie.** Open de SVG in een vectorviewer. Je kunt hem in KiCad's PCB Editor als grafische referentie importeren (de menu-optie voor graphics verschilt per KiCad-versie), of buiten KiCad openhouden. Controleer de schaal; de tekening is geen gevalideerde footprint- of boormaat-tekening. Gebruik hem niet als koperlaag of productiebestand.
+3. **Maak het elektrische schema opnieuw.** Start KiCad Project Manager en maak een nieuw project. In Schematic Editor plaats je de passende KiCad-symbolen, vul je waarden en referenties in op basis van de BOM, en teken je verbindingen na uit de oorspronkelijke schakeling en/of netinformatie. Ken connectoren toe voor voeding, trigger en uitgang waar van toepassing. De BOM alleen bevat geen verbindingen.
+4. **Controleer alle verbindingen.** Voor de eigen dual-ring-kick staat een netlijst die uit de stripboard-layout is afgeleid; gebruik die als controlehulp, niet als vervanging voor het schema. Voor de scan-gebaseerde ontwerpen zijn posities en strip/kolom-aanduidingen deels visueel afgeleid. Vergelijk met de oorspronkelijke scan/schema en verifieer waarden, pinout, sneden, jumpers en voedingsrails.
+5. **Koppel footprints en ontwerp de PCB.** Wijs in KiCad geschikte footprints toe voor de werkelijk gekozen onderdelen. Ontwerp vervolgens een nieuwe PCB op basis van een gekozen maakmethode (bijvoorbeeld geëtste PCB of perfboard-adapter). Een stripboard-SVG is geen gerouteerde PCB-layout: de horizontale strips, gaten en sneden moeten bewust als elektrisch ontwerp worden nagemaakt.
+6. **Voer KiCad-controles uit en laat het ontwerp nakijken.** Gebruik ERC voor het schema en DRC voor de PCB, inspecteer de footprint-/pinmapping, polariteit, stroom- en spanningsratings en vergelijkende meetresultaten. ERC/DRC bewijzen niet dat de oorspronkelijke schakeling correct is of dat een ongebouwd ontwerp werkt.
+
+### Belangrijke beperkingen per ontwerp
+
+- De **Nein Oh Nein**, **TR-909** en **TR-909 met mods**-layouts zijn gebaseerd op een scan-/referentielayout. De componentlocaties en strip-/kolomposities zijn niet allemaal uit een geverifieerde elektrische netlist afgeleid.
+- De **dual-ring-kick** is expliciet als eigen ontwerp en ongebouwd gemarkeerd. De getoonde netlijst wordt uit de stripboard-geometrie berekend; vergelijk die met een zelfstandig nagetekend schema en controleer hem voordat je bouwt.
+- De mod-regelaars in het browsermodel voegen niet vanzelf fysieke modificaties toe aan de getoonde TR-909-layout. Voor exacte mod-schakelingen en waarden is aanvullend schemaonderzoek nodig.
+- De BOM bevat componenttypen/waarden, maar kan externe potmeters, schakelaars, connectoren of voedingsdetails als aparte/onvolledige regels tonen. Controleer de bronpagina per ontwerp.
+
+## GitHub Pages
+
+Dit is een statische site zonder buildstap. Stel in de repository-instellingen GitHub Pages in op de gewenste publicatiebron. De HTML-bestanden kunnen direct worden geserveerd.
