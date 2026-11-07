@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Kick-drum stripboards</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--rad:12px;--gap:12px;
+--bg:#efe9dc;--fg:#1c1a16;--mut:#6a6455;--card:#fbf8f0;--line:#cdc4ae;--board:#d8c39a;--cu:#c8793a;--cu2:#e0a064;--hole:#3a2c18;--acc:#a3124f;--hl:#ffd23f;--wire:#c22;--ic:#2a2a2e;--t:#2f7f78;--r:#e7d7a8;--c:#7aa7d6;--bg2:#fff;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#17150f;--fg:#ece6d6;--mut:#a39b86;--card:#211e16;--line:#3d382a;--board:#5a4a2c;--cu:#b4672b;--cu2:#d9914f;--hole:#14100a;--acc:#ff6fa6;--r:#8a7a48;--c:#456d98;--bg2:#0d0c0b}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#17150f;--fg:#ece6d6;--mut:#a39b86;--card:#211e16;--line:#3d382a;--board:#5a4a2c;--cu:#b4672b;--cu2:#d9914f;--hole:#14100a;--acc:#ff6fa6;--r:#8a7a48;--c:#456d98;--bg2:#0d0c0b}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 ui-sans-serif,system-ui,"Segoe UI",sans-serif;padding:16px}
+.wrap{max-width:1360px;margin:0 auto}
+h1{font:700 22px/1.2 "Avenir Next",ui-sans-serif,system-ui,sans-serif;margin:0 0 4px;letter-spacing:.2px}
+h2{font:700 20px/1.2 "Avenir Next",ui-sans-serif,system-ui,sans-serif;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 10px;max-width:80ch}
+.seg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:5px 12px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.seg.lg button{font-weight:600;padding:8px 16px;border-radius:10px}
+.tabs{position:sticky;top:0;z-index:5;padding:6px 0;margin:0 0 6px;background:var(--bg)}
+.mod-h{margin:8px 0 12px}
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:8px 12px;margin:0;font-size:13px;color:var(--mut);max-width:110ch}
+.mod-g{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"snd" "cir" "prt" "ref"}
+.snd{grid-area:snd}.cir{grid-area:cir}.prt{grid-area:prt}.ref{grid-area:ref}
+@media(min-width:1000px){
+ .mod-g{grid-template-columns:320px minmax(0,1fr);grid-template-areas:"snd cir" "snd prt" "ref ref"}
+ .snd{position:sticky;top:12px;align-self:start;max-height:calc(100vh - 24px);overflow:auto}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card>h3{margin:0;font:600 12px ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.hint{margin:0;font-size:12px;color:var(--mut)}
+.trig{width:100%;padding:16px;font:inherit;font-size:20px;font-weight:700;border-radius:12px;background:var(--acc);color:#fff;border:0;cursor:pointer;touch-action:manipulation}
+.trig small{font-weight:400;opacity:.8;font-size:13px;margin-left:6px}
+@media(hover:none){.trig small{display:none}}
+.trig:active,.trig.f{filter:brightness(1.25);transform:scale(.99)}
+.scope{width:100%;height:90px;background:var(--bg);border:1px solid var(--line);border-radius:8px;display:block}
+.ro{font:12px ui-monospace,Menlo,monospace;color:var(--mut)}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px 16px}
+.g label{font-size:13px;color:var(--mut);display:block}
+.g input[type=range]{width:100%;margin:4px 0 0;accent-color:var(--acc)}
+.g input[type=checkbox]{accent-color:var(--acc);margin-right:4px}
+.tools{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.ovl{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);flex:1 1 220px;max-width:360px}
+.ovl input{flex:1;min-width:0;accent-color:var(--acc)}
+.board{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--board)}
+.board svg{display:block}
+.info{padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;min-height:38px;font:13px ui-monospace,Menlo,Consolas,monospace}
+ul.l{columns:150px;column-gap:16px;list-style:none;padding:0;margin:0;font:13px ui-monospace,Menlo,Consolas,monospace}
+ul.l li{padding:2px 0;cursor:pointer;break-inside:avoid}ul.l li:hover{color:var(--acc)}
+.ref details{margin:0 0 8px}.ref details:last-child{margin:0}
+summary{cursor:pointer;font-weight:600}
+table{border-collapse:collapse;font:12px ui-monospace,Menlo,Consolas,monospace;width:100%}td,th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
+details table{margin-top:6px}details td{font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px}
+.dim{opacity:.18}
+.ov .pt{cursor:pointer}.ov .pt .b{stroke:var(--fg);stroke-width:1.3}
+.ov .pt text{fill:var(--fg);font:600 10.5px ui-monospace,Menlo,monospace;text-anchor:middle;pointer-events:none}
+.ov .pt.ic .b{fill:var(--ic)}.ov .pt.ic text{fill:#fff;font-size:15px}
+.ov .pt.t .b{fill:var(--t)}.ov .pt.t text{fill:#fff}
+.ov .pt.r .b{fill:var(--r)}.ov .pt.c .b{fill:var(--c)}
+.ov .pt.hl .b{fill:var(--hl);stroke-width:3}.ov .pt.hl text{fill:#000}
+.ov .lab{fill:var(--acc);font:700 15px "Avenir Next",ui-sans-serif,sans-serif}
+.ov .nolab .lab{display:none}.ov .nocut .cut{display:none}.ov .small .pt text{display:none}
+#t3_root .seg{cursor:pointer}#t3_root .seg.on{fill:var(--hl)}#t3_root .wr.on{stroke:var(--hl)}#t3_root .pt{cursor:pointer}#t3_root .pt .b{stroke:var(--fg);stroke-width:1.4}#t3_root .pt text{fill:var(--fg);font:600 10.5px ui-monospace,Menlo,monospace;text-anchor:middle;pointer-events:none}#t3_root .pt.ic .b{fill:var(--ic)}#t3_root .pt.ic text{fill:#fff}#t3_root .pt.r .b{fill:var(--r)}#t3_root .pt.c .b{fill:var(--c)}#t3_root .pt.p .b{fill:var(--t)}#t3_root .pt.j .b{fill:var(--acc)}
+.sequencer{margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:14px;display:grid;gap:12px}
+.seq-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.seq-head h2{font-size:16px;margin:0}
+.seq-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seq-tempo{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.seq-tempo input{width:150px;accent-color:var(--acc)}
+.seq-bpm{font:700 18px ui-monospace,Menlo,monospace;color:var(--fg);min-width:66px;text-align:right}
+.seq-actions{display:flex;gap:6px;flex-wrap:wrap}
+.seq-actions button{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:9px;padding:7px 12px;font:600 13px ui-sans-serif,system-ui,sans-serif;cursor:pointer}
+.seq-actions button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.seq-steps{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:6px}
+.seq-step{position:relative;min-width:0;min-height:58px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:600 12px ui-monospace,Menlo,monospace;cursor:pointer}
+.seq-step::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.seq-step.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--bg))}
+.seq-step.on::after{background:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent)}
+.seq-step.current{outline:3px solid var(--hl);outline-offset:1px;transform:translateY(-2px)}
+.seq-step.current::after{box-shadow:0 0 0 3px var(--hl)}
+.seq-step:nth-child(4n+1){margin-left:2px}
+.seq-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:var(--mut);font-size:12px}
+.seq-state{font:12px ui-monospace,Menlo,monospace;color:var(--fg)}
+@media(max-width:760px){.seq-steps{grid-template-columns:repeat(8,minmax(0,1fr))}.seq-tempo input{width:115px}}
+</style></head><body>
+<div class="wrap">
+<h1>Kick-drum stripboards</h1><p class="sub">Vier kicks, elk met dezelfde opbouw: geluid met TRIG en draaiknoppen, de stripboard-schakeling, de onderdelenlijst en (waar beschikbaar) referentiematerialen.</p>
+<div class="seg lg tabs" id="tabs"></div>
+<div class="sequencer" id="kick-sequencer" aria-label="16-staps kick stepsequencer">
+ <div class="seq-head">
+  <h2>16-step sequencer</h2>
+  <div class="seq-controls">
+   <label class="seq-tempo" for="seq-tempo"><span>Tempo</span><input id="seq-tempo" type="range" min="90" max="160" step="1" value="120"><strong class="seq-bpm" id="seq-bpm">120 BPM</strong></label>
+   <div class="seq-actions"><button class="primary" type="button" id="seq-play">▶ Play</button><button type="button" id="seq-stop" disabled>■ Stop</button><button type="button" id="seq-clear">Clear</button><button type="button" id="seq-four">4-on pattern</button></div>
+  </div>
+ </div>
+ <div class="seq-steps" id="seq-steps" role="group" aria-label="Selecteer de 16 stappen"></div>
+ <div class="seq-foot"><span>Each step is a sixteenth note. The sequencer uses the currently selected kick tab.</span><span class="seq-state" id="seq-state" aria-live="polite">Stopped · kick: Nein Oh Nein</span></div>
+</div>
+
+<section id="t1_root" class="tab mod ov" hidden>
+ <div class="mod-h"><h2>Nein Oh Nein Kick V1.0</h2><p class="sub">Jouw handgetekende stripboard-layout. Druk op TRIG en draai aan de knoppen; naast het geluid zie je de layout met alle onderdelen.</p></div>
+ <div class="mod-g">
+  <div class="card snd"><h3>Sound</h3>
+   <button class="trig" type="button" data-v="t1_">▶ TRIG<small>(space)</small></button>
+   <canvas class="scope" id="t1_sc" width="640" height="90"></canvas><div class="ro" id="t1_ro"></div><div class="g" id="t1_kn"></div></div>
+  <div class="card cir"><h3>Circuit</h3>
+   <div class="tools"><div class="seg" id="t1_bar"></div><div class="seg"><button type="button" id="t1_bcut" class="on">✕ Cuts</button><button type="button" id="t1_blab" class="on">Labels</button><button type="button" id="t1_bsm">Small</button></div></div>
+   <div class="board"><svg id="t1_s" viewBox="0 0 1298 900" style="min-width:860px;width:100%;height:auto"></svg></div>
+   <div class="info" id="t1_info" aria-live="polite">Tap a part to see type, value, strip and column.</div></div>
+  <div class="card prt"><h3>Parts</h3><p class="hint">Count by type and value. Tap to highlight.</p><ul class="l" id="t1_list"></ul></div>
+ </div>
+</section>
+<section id="t2_root" class="tab mod ov" hidden>
+ <div class="mod-h"><h2>Roland TR-909 bass drum</h2><p class="sub">909 kick with TUNE, ATTACK, DECAY, LEVEL and ACCENT. The sound follows measurements from 909 samples.</p><div class="note">The layout is the Nein layout without the DIST trap (top-right), with 909 names rather than a rerouted original board. The sound is a model, not a circuit simulation.</div></div>
+ <div class="mod-g">
+  <div class="card snd"><h3>Sound</h3>
+   <button class="trig" type="button" data-v="t2_">▶ TRIG<small>(space)</small></button>
+   <canvas class="scope" id="t2_sc" width="640" height="90"></canvas><div class="ro" id="t2_ro"></div><div class="g" id="t2_kn"></div></div>
+  <div class="card cir"><h3>Circuit</h3>
+   <div class="tools"><div class="seg" id="t2_bar"></div><div class="seg"><button type="button" id="t2_bcut" class="on">✕ Cuts</button><button type="button" id="t2_blab" class="on">Labels</button><button type="button" id="t2_bsm">Small</button></div></div>
+   <div class="board"><svg id="t2_s" viewBox="0 0 1298 900" style="min-width:860px;width:100%;height:auto"></svg></div>
+   <div class="info" id="t2_info" aria-live="polite">Tap a part to see type, value, strip and column.</div></div>
+  <div class="card prt"><h3>Parts</h3><p class="hint">Count by type and value. Tap to highlight.</p><ul class="l" id="t2_list"></ul></div>
+  <div class="card ref"><h3>Reference</h3><details open><summary>Original Roland TR-909 bass drum schematic (for comparison)</summary><img alt="TR-909 bass drum schematic" style="width:100%;max-width:1053px;display:block;margin-top:8px" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsL/9k=" /></details></div>
+ </div>
+</section>
+<section id="t3_root" class="tab mod own" hidden>
+ <div class="mod-h"><h2>Double ring kick (own design)</h2><p class="sub">Own design on 45 strips: two detuned sine rings (body + beater), a click pad, a mixer and a diode clipper drive. Three TL op-amps total.</p><div class="note">Own design, not built. The layout is internally checked (netlist below, derived from the strips). There is no true pitch envelope: the rapidly decaying higher beater ring sits on top of the body ring.</div></div>
+ <div class="mod-g">
+  <div class="card snd"><h3>Sound</h3>
+   <button class="trig" type="button" data-v="t3_">▶ TRIG<small>(space)</small></button>
+   <canvas class="scope" id="t3_sc" width="640" height="90"></canvas><div class="ro" id="t3_ro"></div><div class="g" id="t3_kn"></div></div>
+  <div class="card cir"><h3>Circuit</h3>
+   <div class="tools"><div class="seg"><button type="button" id="t3_bcut" class="on">✕ Cuts</button><button type="button" id="t3_bclr">Clear highlight</button></div><span class="hint">Tap a strip or hole: the whole net is highlighted.</span></div>
+   <div class="board"><svg id="t3_s" style="min-width:860px;width:100%;height:auto"></svg></div>
+   <div class="info" id="t3_info" aria-live="polite">Tap a strip, wire or part.</div></div>
+  <div class="card prt"><h3>Parts</h3><p class="hint">Part, value and name. Tap to highlight on the board.</p><ul class="l" id="t3_list"></ul></div>
+  <div class="card ref"><h3>Reference</h3><details><summary>Netlist (automatically derived from the layout: compare with the schematic)</summary><table id="t3_nets"></table></details></div>
+ </div>
+</section>
+<section id="t4_root" class="tab mod ov" hidden>
+ <div class="mod-h"><h2>TR-909 with common mods</h2><p class="sub">The 909 kick extended with the best-known bass drum mods: PITCH, TUNE DEPTH, DRIVE, extended TUNE/DECAY and DECAY HOLD.</p><div class="note">The sound is a model, not a circuit simulation; the mod controls are my interpretation of what the mods do according to the sources.</div></div>
+ <div class="mod-g">
+  <div class="card snd"><h3>Sound</h3>
+   <button class="trig" type="button" data-v="t4_">▶ TRIG<small>(space)</small></button>
+   <canvas class="scope" id="t4_sc" width="640" height="90"></canvas><div class="ro" id="t4_ro"></div><div class="g" id="t4_kn"></div></div>
+  <div class="card cir"><h3>Circuit</h3>
+   <div class="tools"><div class="seg" id="t4_bar"></div><div class="seg"><button type="button" id="t4_bcut" class="on">✕ Cuts</button><button type="button" id="t4_blab" class="on">Labels</button><button type="button" id="t4_bsm">Small</button></div></div>
+   <div class="board"><svg id="t4_s" viewBox="0 0 1298 900" style="min-width:860px;width:100%;height:auto"></svg></div>
+   <div class="info" id="t4_info" aria-live="polite">Tap a part to see type, value, strip and column.</div></div>
+  <div class="card prt"><h3>Parts</h3><p class="hint">Count by type and value. Tap to highlight.</p><ul class="l" id="t4_list"></ul></div>
+  <div class="card ref"><h3>Reference</h3><details open><summary>Well-known 909 bass drum mods (what they do)</summary><table><tr><th>Mod</th><th>Effect</th><th>Known from</th></tr><tr><td>PITCH</td><td>Potentiometer for the oscillator’s final frequency (the fixed ~50 Hz becomes adjustable)</td><td>Colin Fraser mods, modified 909 with pitch knob</td></tr><tr><td>TUNE DEPTH</td><td>How much the pitch sweeps downward at the start (duration remains tied to TUNE)</td><td>Colin Fraser mods, ‘depth’ knob</td></tr><tr><td>DRIVE</td><td>Waveform from normal to square (hard clipping); also used as overdrive switch</td><td>Colin Fraser mods, Reverb-modded 909, ‘overload’ on Tiptop BD909</td></tr><tr><td>TUNE ×3</td><td>Longer pitch-envelope range</td><td>Colin Fraser (extended TUNE range), ‘Tune ×2’ on BDX 909</td></tr><tr><td>DECAY ×4</td><td>Much longer decay time: 808-like boom</td><td>Colin Fraser (extended decay), ‘extended decay switch’</td></tr><tr><td>DECAY HOLD</td><td>Holds volume while the button/gate is active, then continues decay</td><td>‘Decay hold button’ on a modified 909</td></tr></table><p style="font-size:12px;color:var(--mut);margin:8px 0 0">Sources mostly describe the effect and control; the exact part numbers and values per mod could not be verified. Search the web for specific mod schematics if you want that level.</p></div>
+ </div>
+</section>
+</div>
+<script>
+const SCAN="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsL/9k=";
+const KNOBS={"t1_": ["nein", [["PITCH", 0.35, "PITCH"], ["TDEC", 0.4, "T.DEC (pitch-decay)"], ["ACC", 0, "ACC. (accent)"], ["DEC", 0.5, "DEC (decay)"], ["ATK", 0.4, "ATK (click)"], ["NOISE", 0.15, "NOISE"], ["DIST", 0.2, "DIST"], ["LVL", 0.7, "LVL"]]], "t2_": ["909", [["PITCH", 0.4, "PITCH"], ["ATK", 0.5, "ATK"], ["DEC", 0.5, "DEC"], ["LVL", 0.7, "LVL"], ["ACC", 0, "ACCENT"]]], "t3_": ["dual", [["TUNE1", 0.6, "TUNE 1"], ["DEC1", 0.5, "DECAY 1"], ["TUNE2", 0.5, "TUNE 2"], ["DEC2", 0.5, "DECAY 2"], ["BODY", 0.8, "BODY"], ["BEAT", 0.8, "BEATER"], ["CLICK", 0.15, "CLICK"], ["DRIVE", 0.3, "DRIVE"], ["LVL", 0.7, "LVL"]]], "t4_": ["909m", [["PITCH", 0.5, "PITCH"], ["DEPTH", 0.4, "TUNE DEPTH"], ["DRIVE", 0.2, "DRIVE"], ["DEC", 0.5, "DECAY"], ["ATK", 0.4, "ATK"], ["ACC", 0, "ACCENT"], ["HOLD", 0.25, "DECAY HOLD"], ["TUNEX", 0, "TUNE ×3", "sw"], ["DECX", 0, "DECAY ×4", "sw"], ["LVL", 0.7, "LVL"]]]};
+</script></body></html>
