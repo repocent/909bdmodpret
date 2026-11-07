@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8"><title>Nein Oh Nein Kick V1.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f3ea;--fg:#1d1d1d;--mut:#6b675c;--card:#fffdf6;--line:#cfc9b8;--hole:#b9b5a9;--hl:#ffd23f;--pink:#ff6fb0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171a;--fg:#ececec;--mut:#9aa0a6;--card:#1e2126;--line:#3a3f46;--hole:#4a5058;--pink:#ff6fb0}}
+:root[data-theme="dark"]{--bg:#15171a;--fg:#ececec;--mut:#9aa0a6;--card:#1e2126;--line:#3a3f46;--hole:#4a5058;--pink:#ff6fb0}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,sans-serif;padding:12px}
+h1{font-size:20px;margin:0 0 2px}p{color:var(--mut);margin:0 0 10px}
+.bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:16px;padding:6px 12px;font:inherit;cursor:pointer}
+button.on{background:var(--fg);color:var(--bg)}
+.board{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+svg{display:block;min-width:900px;width:100%;height:auto}
+.c{cursor:pointer}.c rect{fill:var(--card);stroke:var(--fg);stroke-width:1.5}
+.c text{fill:var(--fg);font:11px sans-serif;text-anchor:middle;pointer-events:none}
+.c.dim{opacity:.12}.c.hl rect{fill:var(--hl);stroke-width:3}.c.hl text{fill:#000}
+.lab{fill:var(--pink);font:700 15px 'Comic Sans MS',cursive,sans-serif}
+#info{margin:10px 0;padding:8px 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:20px}
+ul{columns:2;list-style:none;padding:0;margin:0;font-size:13px}li{padding:2px 0;cursor:pointer}li:hover{color:var(--pink)}
+@media(min-width:700px){ul{columns:4}}
+.syn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+#trig{width:100%;padding:16px;font-size:20px;font-weight:700;border-radius:12px;background:var(--pink);color:#fff;border:0;margin-bottom:10px;touch-action:manipulation}
+#trig:active,#trig.f{filter:brightness(1.25);transform:scale(.99)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 16px}
+.g label{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+.g input{width:100%;accent-color:var(--pink)}
+svg.solo .c,svg.solo .lab,svg.solo .cut{display:none}
+.hide{display:none!important}
+svg.scan .c rect{fill-opacity:.18;stroke:var(--pink);stroke-width:2}
+svg.scan .c.hl rect{fill-opacity:.9}
+svg.scan .c text,svg.scan line,svg.scan polyline,svg.scan .lab,svg.scan .cut{display:none}
+.hs{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border:2px solid var(--pink);background:rgba(176,18,95,.15);border-radius:50%;padding:0}
+.hs.hl{background:var(--hl)}
+#s9.ov rect{fill-opacity:.1}
+</style></head><body>
+<h1>Nein Oh Nein Kick V1.0</h1>
+<p>Your original stripboard scan with clickable parts. Tap a dot for info, filter by type, or switch off the scan to view my drawing.</p>
+<div class="bar"><button id="t909" class="on">Roland TR-909</button><button id="tnein">Nein Oh Nein</button></div>
+<div id="p909" class="hide"><div class="bar"><button id="b_sch" class="on">Schematic</button><button id="b_blk">Block diagram</button></div><div id="sch"></div><div class="bar blk hide"><label>Original scan: <input type="range" id="so9" min="0" max="1" step=".05" value="0"></label></div></div>
+<div class="bar nein" id="bar"></div>
+<div class="bar nein"><label>Original scan: <input type="range" id="so" min="0" max="1" step=".05" value="0"></label><button id="solo">Scan + parts</button></div>
+<div class="board nein"><svg id="s" viewBox="0 0 1298 900"></svg></div>
+<div class="syn"><div class="bar nein"><button id="m909" class="on">TR-909 version</button><button id="mv1">Own approach</button></div><div class="bar hide" id="ab"><button id="abs" class="on">Abstract</button><button id="abo">Sample</button></div></div>
+<div id="info" class="nein">Tap a part.</div>
+<ul id="list" class="nein"></ul>
+<script>
+const v9={PITCH:.4,ATK:.5,DEC:.5,LVL:.7,TDEC:.25,ACC:0,NOISE:.3,DIST:0};let tab="nein";
+let mode="909";let smp=false;
+const NS="http://www.w3.org/2000/svg",s=document.getElementById("s");
+const el=(t,a,p=s)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+el("image",{"id":"scan",href:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdL[... ]",x:0,y:0,width:1298,height:900,preserveAspectRatio:"none",opacity:0});
+for(let y=108;y<=880;y+=22.2){let c="var(--hole)",w=1.5,d="2 12";
+ if(Math.abs(y-108)<6){c="#d22";w=3;d=""}
+ else if([297,452,733].some(v=>Math.abs(y-v)<8)){c="#1b6b3a";w=3;d=""}
+ else if(Math.abs(y-792)<8){c="#1e4fd6";w=3;d=""}
+ el("line",{x1:10,x2:1290,y1:y,y2:y,stroke:c,"stroke-width":w,"stroke-dasharray":d,"stroke-linecap":"round"})}
+el("polyline",{points:"500,483 520,553 870,560 880,600 960,600 965,650 1005,665",fill:"none",stroke:"#e11","stroke-width":4,"stroke-linecap":"round"});
+const L=[["TRIG",125,125],["DIST",858,157],["+15V",990,128],["OUT",1245,172],["DIST⊥",1090,192],["VR6",600,205],["T.DEC⊥",370,290],["PITCH",905,432],["PITCH⊥",525,468],["VR6⊥",570,500],["A[...]"];L.forEach(([t,x,y])=>{const e=el("text",{x,y,class:"lab"});e.textContent=t});
+const P=[["ic","TL072",180,373,"Dual op-amp (trigger / envelope)"],["ic","TL074",711,328,"Quad op-amp (pitch-/decay-envelope, VCO)"],["ic","TL071",1188,373,"Single op-amp (output buffer)"],["t","BC559",360,150,"PNP transistor"],["t","BC559",417,120,"PNP transistor"],["t","BC549",308,255,"NPN transistor"],["t","BC559",360,360,"PNP transistor"],["t","BC549",280,505,"NPN transistor"],["t","BC559",250,590,"PNP transistor"],["t","BC559",500,600,"PNP transistor"],["t","BC549",650,615,"NPN transistor"],["t","BC559",757,490,"PNP transistor"],["t","BC549",920,330,"NPN transistor"],["t","BC549",1093,300,"NPN (distortion/output)"],["t","BC549",1148,590,"NPN (noise)"],["r","47K",270,138],["r","47K",460,125],["r","100K",325,185],["r","100K",470,185],["r","1,5M",552,155],["r","22K",755,188],["r","330K",885,250],["r","1K",930,230],["r","10",1055,155],["r","2,2K",1055,265],["r","1K",1275,282],["r","22K",105,295],["r","10K",180,275],["r","4,7K",165,215],["r","100K",15,215],["r","100K",42,280],["r","47K",70,340],["r","22K",45,400],["r","100K",72,420],["r","1M",320,385],["r","10K",270,375],["r","4,7K",270,420],["r","2,2K",410,248],["r","470",500,285],["r","330K",560,285],["r","100K",640,305],["r","100K",600,430],["r","100K",525,420],["r","100K",460,467],["r","4,7K",525,318],["r","1M",310,500],["r","47K",325,545],["r","470K",325,590],["r","6,8K",405,555],["r","22K",413,450],["r","22K",413,685],["r","39K",575,635],["r","22K",545,592],["r","100K",555,705],["r","100K",620,705],["r","1,8K",665,527],["r","22K",810,592],["r","10K",795,712],["r","330",850,685],["r","4,7K",915,630],["r","4,7K",945,680],["r","22K",830,490],["r","10K",885,490],["r","47K",905,545],["r","47",1010,435],["r","470K",1050,500],["r","12K",1010,555],["r","4,7K",1055,655],["r","470K",1225,625],["r","150K",1185,690],["r","47",1240,685],["r","100K",800,405],["r","47K",890,345],["r","4,7K",890,380],["r","33N",830,435],["r","10",1200,780],["c","10N",100,190],["c","68N",360,240],["c","2,2N",212,280],["c","100P",215,468],["c","1,8µ",465,320],["c","33N",350,630],["c","3,3N",520,660],["c","6,8N",465,685],["c","4,7N",670,665],["c","100P",697,640],["c","0,47µ",750,625],["c","100N",895,715],["c","0,47µ",990,622],["c","33N",1135,690],["c","1,8µ",985,485],["c","10N",1225,225],["c","47µ",1120,128],["c","47µ",1005,745]];
+const T={ic:"IC",t:"Transistor",r:"Resistance",c:"Capacitor"};
+const G=[];let n=0;
+P.forEach(([ty,lb,x,y,inf])=>{const g=el("g",{class:"c",transform:`translate(${x},${y})`});const w=ty=="ic"?100:ty=="t"?46:40,h=ty=="ic"?110:ty=="t"?22:16;el("rect",{x:-w/2,y:-h/2,width:w,height:h,rx:ty=="ic"?4:8},g);const t=el("text",{y:4},g);t.textContent=lb;const o={g,ty,lb,x,y,inf:inf||(ty=="r"?"Resistance "+lb+"Ω":ty=="c"?"Capacitor "+lb+"F":""),id:n++};g.onclick=()=>pick(o);G.push(o)});
+const info=document.getElementById("info"),list=document.getElementById("list"),bar=document.getElementById("bar");
+function pick(o){G.forEach(q=>q.g.classList.remove("hl"));o.g.classList.add("hl");info.textContent=`${T[o.ty]} ${o.lb} — ${o.inf}`}
+let f="all";
+function filt(k){f=k;[...bar.children].forEach(b=>b.classList.toggle("on",b.dataset.k==k));G.forEach(o=>o.g.classList.toggle("dim",k!="all"&&o.ty!=k))}
+[["all","All"],["ic","ICs"],["t","Transistors"],["r","Resistors"],["c","Capacitors"]].forEach(([k,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>filt(k);bar.appendChild(b)});
+filt("all");
+const cnt={};G.forEach(o=>{const k=T[o.ty]+" "+o.lb;(cnt[k]=cnt[k]||[]).push(o)});
+Object.keys(cnt).sort().forEach(k=>{const li=document.createElement("li");li.textContent=`${cnt[k].length}× ${k}`;li.onclick=()=>{cnt[k].forEach(o=>o.g.classList.add("hl"));pick(cnt[k][0]);cnt[k].forEach(o=>o.g.classList.add("hl"))};list.appendChild(li)});
+const CUTS=[[82, 108], [500, 136], [388, 138], [1090, 139], [126, 142], [495, 142], [992, 143], [254, 167], [389, 168], [244, 165], [922, 168], [1090, 169], [244, 172], [384, 173], [723, 196], [8, 100], [822, 190], [250, 230], [540, 240], [470, 420], [660, 525], [980, 560], [1160, 645], [1200, 780]];
+CUTS.forEach(([x,y])=>el("path",{d:`M${x-7},${y-7}l14,14m0,-14l-14,14`,stroke:"#e11","stroke-width":2.5,fill:"none",class:"cut"}));
+const so=document.getElementById("so"),sc=document.getElementById("scan");
+so.oninput=()=>{s.classList.remove("solo");sc.setAttribute("opacity",so.value)};
+const sbtn=document.getElementById("solo");
+function scanMode(on){s.classList.toggle("scan",on);sbtn.classList.toggle("on",on);sc.setAttribute("opacity",on?1:so.value);so.disabled=on;
+ G.forEach(o=>{const r=o.g.querySelector("rect");if(!r.dataset.w){["width","height","x","y","rx"].forEach(a=>r.dataset[a]=r.getAttribute(a))}
+  if(on){const d=o.ty=="ic"?[100,110]:[18,18];r.setAttribute("width",d[0]);r.setAttribute("height",d[1]);r.setAttribute("x",-d[0]/2);r.setAttribute("y",-d[1]/2);r.setAttribute("rx",o.ty=="ic"?4:8)}
+  else["width","height","x","y","rx"].forEach(a=>r.setAttribute(a,r.dataset[a]))})}
+sbtn.onclick=()=>scanMode(!s.classList.contains("scan"));
+scanMode(true);
+const K={PITCH:[.35,"PITCH"],TDEC:[.4,"T.DEC (pitch decay)"],ACC:[0,"ACC. (accent)"],DEC:[.5,"DEC (decay)"],ATK:[.4,"ATK (click)"],NOISE:[.15,"NOISE"],DIST:[.2,"DIST"],LVL:[.7,"LVL"]};
+const v={};let ctx,shaper,out,nbuf;
+const kn=document.getElementById("knobs");
+for(const k in K){v[k]=K[k][0];const l=document.createElement("label");l.innerHTML=`<span>${K[k][1]}</span>`;const i=document.createElement("input");i.type="range";i.min=0;i.max=1;i.step=.01;i.value=v[k];i.oninput=()=>{v[k]=+i.value;if(k=="DIST"&&shaper)curve();if(k=="LVL"&&out)out.gain.value=v.LVL};const d=document.createElement("div");d.appendChild(l);d.appendChild(i);kn.appendChild(d)}
+function curve(){const n=1024,c=new Float32Array(n),a=1+v.DIST*25;for(let i=0;i<n;i++){const x=i/(n-1)*2-1;c[i]=(1-v.DIST)*x+v.DIST*Math.tanh(a*x)/Math.tanh(a)}shaper.curve=c}
+function init(){ctx=new(window.AudioContext||window.webkitAudioContext)();shaper=ctx.createWaveShaper();shaper.oversample="2x";curve();out=ctx.createGain();out.gain.value=v.LVL;const comp=ctx.createDynamicsCompressor();shaper.connect(out);out.connect(comp);comp.connect(ctx.destination);nbuf=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+function kickV1(){if(!ctx)init();if(ctx.state!=="running")ctx.resume();const t=ctx.currentTime,f=35+v.PITCH*90,dec=.12+v.DEC*1.1,f0=f*(1+v.TDEC*10),pd=.02+v.TDEC*.05;const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f,t+pd*3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.9,t+.002);g.gain.setTargetAtTime(0,t+.003,dec/4);o.connect(g);g.connect(shaper);o.start(t);o.stop(t+dec*2+.2);const c=ctx.createOscillator(),cg=ctx.createGain();c.type="triangle";c.frequency.setValueAtTime(f0*2.5,t);c.frequency.exponentialRampToValueAtTime(f,t+.012);cg.gain.setValueAtTime(v.ATK*.9,t);cg.gain.exponentialRampToValueAtTime(.001,t+.015);c.connect(cg);cg.connect(shaper);c.start(t);c.stop(t+.03);const n=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),ng=ctx.createGain();n.buffer=nbuf;bp.type="bandpass";bp.frequency.value=1800;bp.Q.value=.6;ng.gain.setValueAtTime(v.NOISE*.8,t);ng.gain.exponentialRampToValueAtTime(.001,t+.05);n.connect(bp);bp.connect(ng);ng.connect(shaper);n.start(t);n.stop(t+.08);const b=document.getElementById("trig");b.classList.add("f");setTimeout(()=>b.classList.remove("f"),80)}
+const m9=document.getElementById("m909"),m1=document.getElementById("mv1");m9.onclick=()=>{mode="909";m9.classList.add("on");m1.classList.remove("on")};m1.onclick=()=>{mode="v1";m1.classList.add("on");m9.classList.remove("on")};
+const k9=document.getElementById("k9");[["TUNE","PITCH"],["ATTACK","ATK"],["DECAY","DEC"],["LEVEL","LVL"],["ACCENT","ACC"]].forEach(([n,k])=>{const d=document.createElement("div");d.innerHTML=`<label><span>${n}</span></label>`;const i=document.createElement("input");i.type="range";i.min=0;i.max=1;i.step=.01;i.value=v9[k];i.oninput=()=>{v9[k]=+i.value};d.appendChild(i);k9.appendChild(d)});
+const s9=document.getElementById("s9");s9.style.color="var(--fg)";
+const e9=(t,a,p=s9)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+e9("defs",{}).innerHTML='<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker>';
+const tx=(x,y,t,c,fs,w)=>{const e=e9("text",{x,y,"text-anchor":"middle",fill:c,"font-size":fs,"font-weight":w||400});e.textContent=t};
+const bx=(x,y,w,h,t)=>{e9("rect",{x,y,width:w,height:h,rx:6,fill:"var(--card)",stroke:"var(--fg)","stroke-width":1.5});t.split("|").forEach((l,i,a)=>tx(x+w/2,y+h/2+4+(i-(a.length-1)/2)*14,l,"var(--fg)",12))};
+const ln=p=>e9("polyline",{points:p,fill:"none",stroke:"var(--fg)","stroke-width":1.5,"marker-end":"url(#ar)"});
+const pot=(x,y,t)=>{e9("circle",{cx:x,cy:y,r:15,fill:"var(--card)",stroke:"var(--pink)","stroke-width":2.5});e9("line",{x1:x,y1:y,x2:x+8,y2:y-9,stroke:"var(--pink)","stroke-width":2.5});tx(x,y-21,t,"var(--fg)",11)};
+const SCH={w:1053,h:575,HS:[["TRIG",100,190,"TRIG input (5V pulse, 2 ms)"],["ACCENT",230,262,"ACCENT input / adjustment",4],["TUNE",405,250,"TUNE potentiometer (pitch)",0],["ATTACK",635,258,"ATTACK potentiometer",2],["DECAY",630,398,"DECAY potentiometer",1],["LEVEL",755,318,"LEVEL potentiometer",3],["OUTPUT",885,360,"OUT"],["DISTORTION",860,150,"DIST"]]};
+const sch=document.getElementById("sch");sch.innerHTML='<div class="board"><div id="schw" style="position:relative;min-width:900px"><img alt="TR-909 bass drum schematic" style="width:100%;display:block" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsL/9k=" /></div></div>';
+const schw=document.getElementById("schw"),sinfo=document.getElementById("sinfo");
+SCH.HS.forEach(([n,x,y,i,k])=>{const b=document.createElement("button");b.className="hs";b.title=n;b.style.left=x/SCH.w*100+"%";b.style.top=y/SCH.h*100+"%";b.onclick=()=>{schw.querySelectorAll(".hs").forEach(e=>e.classList.remove("hl"));b.classList.add("hl");sinfo.textContent=n+" — "+i;if(k!==undefined){const r=document.getElementById("k9").querySelectorAll("input")[k];if(r)r.focus()}};schw.appendChild(b)});
+const bs=document.getElementById("b_sch"),bb=document.getElementById("b_blk");
+function sub(x){sch.classList.toggle("hide",x!=="s");document.querySelectorAll("#p909 .blk").forEach(e=>e.classList.toggle("hide",x==="s"));bs.classList.toggle("on",x==="s");bb.classList.toggle("on",x==="b")}
+bs.onclick=()=>sub("s");bb.onclick=()=>sub("b");
+function setTab(t){tab=t;document.querySelectorAll(".nein").forEach(e=>e.classList.toggle("hide",t==="909"));["p909","k9","ab"].forEach(i=>document.getElementById(i).classList.toggle("hide",t!=="909"));document.getElementById("t909").classList.toggle("on",t==="909");document.getElementById("tnein").classList.toggle("on",t!=="909")}
+document.getElementById("t909").onclick=()=>setTab("909");document.getElementById("tnein").onclick=()=>setTab("nein");setTab("909");
+const abs_=document.getElementById("abs"),abo=document.getElementById("abo");abs_.onclick=()=>{smp=false;abs_.classList.add("on");abo.classList.remove("on")};abo.onclick=()=>{smp=true;abo.classList.add("on");abs_.classList.remove("on");loadSmp()};
+const tb=document.getElementById("trig");tb.addEventListener("pointerdown",e=>{e.preventDefault();kick()});addEventListener("keydown",e=>{if(e.code=="Space"&&!e.repeat){e.preventDefault();kick()}});
+function kick(){if(tab==="909"&&smp){playSample();return}if(!ctx)init();const sv={...v};if(tab==="909")Object.assign(v,v9);out.gain.value=v.LVL;curve();(tab==="909"||mode==="909"?kick909:kickV1)();Object.assign(v,sv)}
+let W909,CL909;const TQ=[0,.3,.7,1],F0=[290,283,273,262],PT=[8,10.6,17.8,29],DT=[13,31,59,97];
+function itp(a,x){x=Math.min(1,Math.max(0,x));let k=0;while(k<2&&x>TQ[k+1])k++;const u=(x-TQ[k])/(TQ[k+1]-TQ[k]);return a[k]+(a[k+1]-a[k])*u}
+function kick909(){if(!ctx)init();if(ctx.state!=="running")ctx.resume();if(!W909){const n=16,re=new Float32Array(n),im=new Float32Array(n);im[1]=1;for(let h=3;h<n;h+=2)im[h]=(h==3?.9:.5)*(((h-1)/2)%2?-1:1)/(h*h);W909=ctx.createPeriodicWave(re,im);CL909=new Float32Array(1024);for(let i=0;i<1024;i++){const u=i/511.5-1;CL909[i]=Math.tanh(3*u)/Math.tanh(3)}}
+ const t=ctx.currentTime,ac=1+v.ACC*.6,f0=itp(F0,v.PITCH),pt=itp(PT,v.PITCH)/1000,td=itp(DT,v.DEC)/1000,A0=2*ac;const pre=ctx.createGain();pre.gain.value=.5;const clip=ctx.createWaveShaper();clip.curve=CL909;pre.connect(clip);clip.connect(shaper);const o=ctx.createOscillator(),g=ctx.createGain();o.setPeriodicWave(W909);o.frequency.setValueAtTime(50+f0-50,t);o.frequency.setTargetAtTime(50,t,pt);g.gain.setValueAtTime(A0,t);g.gain.setTargetAtTime(0,t,.046);g.gain.setValueAtTime(A0*Math.exp(-.06/.046),t+.06);g.gain.setTargetAtTime(0,t+.06,td);o.connect(g);g.connect(pre);o.start(t);o.stop(t+.06+td*7+.05);const ag=ctx.createGain();ag.gain.setValueAtTime(v.ATK*ac*.15,t);ag.gain.setTargetAtTime(0,t+.001,.004);ag.connect(shaper);const sr=ctx.sampleRate,pb=ctx.createBuffer(1,sr*.01|0,sr),pdta=pb.getChannelData(0);for(let i=0;i<pdta.length;i++)pdta[i]=i<sr*.002?1:0;const ps=ctx.createBufferSource();ps.buffer=pb;const pl=ctx.createBiquadFilter();pl.type="lowpass";pl.frequency.value=900;ps.connect(pl);pl.connect(ag);ps.start(t);const n=ctx.createBufferSource(),lp=ctx.createBiquadFilter(),ng=ctx.createGain();n.buffer=nbuf;lp.type="lowpass";lp.frequency.value=5000;lp.Q.value=3;ng.gain.value=v.NOISE*.6;n.connect(lp);lp.connect(ng);ng.connect(ag);n.start(t);n.stop(t+.05);const b=document.getElementById("trig");b.classList.add("f");setTimeout(()=>b.classList.remove("f"),80)}
+</script></body></html>
